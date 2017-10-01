@@ -1,16 +1,24 @@
+#! /usr/bin/env python3
 import psycopg2
 
-# DBNAME - the name for the Database
-DBNAME = "news"
+
+# cutting out the reusable statements and created one function
+def connect(DBNAME="news"):
+    try:
+        # connecting to the database 
+        db = psycopg2.connect(database=DBNAME)
+        # runing queries to get the results
+        c = db.cursor()
+        return db, c
+    except:
+        print("You are not connected to your database.")
 
 
 # function for getting the most popular articles
 def query_1():
 
-    # Connecting to the database
-    db = psycopg2.connect(database=DBNAME)
-    # running queries to get the results
-    c = db.cursor()
+    #connecting to connect function
+    db, c = connect()
     # execute query_1
     c.execute("SELECT title, count(*) AS views FROM articles, log WHERE " +
               "articles.slug=substring(log.path FROM 10) GROUP BY " +
@@ -30,14 +38,15 @@ def query_1():
 # function for geting the most popular authors
 def query_2():
 
-    # Connecting to the database
-    db = psycopg2.connect(database=DBNAME)
-    # running queries to get the results
-    c = db.cursor()
+    #connecting to connect function
+    db, c = connect()
     # execute query_2
-    c.execute("SELECT name, count(*) AS views FROM authors, articles, " +
-              "log WHERE articles.slug = substring(log.path FROM 10) " +
-              "GROUP BY authors.name ORDER BY views DESC LIMIT 4")
+    c.execute("SELECT authors.name, count(*) AS views " +
+              "FROM authors, articles, log " +
+              "WHERE authors.id = articles.author " +
+              "AND log.path = concat('/article/', articles.slug) " +
+              "GROUP BY authors.name " +
+              "ORDER BY views DESC;")
     # Get the results from the cursor
     results = c.fetchall()
     # Prints the 2nd Question
@@ -53,10 +62,8 @@ def query_2():
 # function for getting the results of 1% or higher in lead errors
 def query_3():
 
-    # Connecting to the database
-    db = psycopg2.connect(database=DBNAME)
-    # running queries to get the results
-    c = db.cursor()
+    #connecting to connect function
+    db, c = connect()
     # execute query_3
     c.execute("SELECT to_char(time, 'FMMonth DD, YYYY'), round(100.0*" +
               "sum(case log.status when '404 NOT FOUND' then 1 else 0 " +

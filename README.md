@@ -26,12 +26,13 @@
 >`ORDER BY views`  
 >`DESC LIMIT 3`  
 - Second Query:
->`SELECT name, count(*) AS views`  
+>`SELECT authors.name, count(*) AS views`  
 >`FROM authors, articles, log`  
->`WHERE articles.slug = substring(log.path FROM 10)`  
+>`WHERE authors.id = articles.author`  
+>`AND log.path = concat('/article/', articles.slug)`  
 >`GROUP BY authors.name`  
 >`ORDER BY views`  
->`DESC LIMIT 4`  
+>`DESC`  
 - Third Query:
 >`SELECT to_char(time, 'FMMonth DD, YYYY'), round(100.0*sum(case log.status when '404 NOT FOUND' then 1 else 0 end)/count(log.status), 2) AS error`  
 >`FROM log`  
