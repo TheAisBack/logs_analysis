@@ -2,24 +2,24 @@
 import psycopg2
 
 
-# cutting out the reusable statements and created one function
+# Cutting out the reusable statements and created one function
 def connect(DBNAME="news"):
     try:
-        # connecting to the database 
+        # Connecting to the database
         db = psycopg2.connect(database=DBNAME)
-        # runing queries to get the results
+        # Runing queries to get the results
         c = db.cursor()
         return db, c
-    except:
+    except Exception:
         print("You are not connected to your database.")
 
 
-# function for getting the most popular articles
+# Function for getting the most popular articles
 def query_1():
 
-    #connecting to connect function
+    # Connecting to connect function
     db, c = connect()
-    # execute query_1
+    # Execute query_1
     c.execute("SELECT title, count(*) AS views FROM articles, log WHERE " +
               "articles.slug=substring(log.path FROM 10) GROUP BY " +
               "articles.title ORDER BY views DESC LIMIT 3")
@@ -35,12 +35,12 @@ def query_1():
     # Return results
 
 
-# function for geting the most popular authors
+# Function for geting the most popular authors
 def query_2():
 
-    #connecting to connect function
+    # Connecting to connect function
     db, c = connect()
-    # execute query_2
+    # Execute query_2
     c.execute("SELECT authors.name, count(*) AS views " +
               "FROM authors, articles, log " +
               "WHERE authors.id = articles.author " +
@@ -59,12 +59,12 @@ def query_2():
     # Return results
 
 
-# function for getting the results of 1% or higher in lead errors
+# Function for getting the results of 1% or higher in lead errors
 def query_3():
 
-    #connecting to connect function
+    # Connecting to connect function
     db, c = connect()
-    # execute query_3
+    # Execute query_3
     c.execute("SELECT to_char(time, 'FMMonth DD, YYYY'), round(100.0*" +
               "sum(case log.status when '404 NOT FOUND' then 1 else 0 " +
               "end)/count(log.status), 2) AS error FROM log GROUP BY " +
@@ -82,7 +82,7 @@ def query_3():
     # Return results
 
 
-# main function
+# Main function
 def main():
     # Prints the query_1
     query_1()
