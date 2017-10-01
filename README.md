@@ -12,6 +12,11 @@
 - Start your terminal and locate this file
 - enter `vagrant up`
 - Then enter `vagrant ssh`
-- Then to load the data enter `psql -d new -f newsdata.sql`
+- Then to load the data enter `psql -d news -f newsdata.sql`
 - Sidenote newsdata.sql is a large file and can't be added to this repository.
-- Then finally to execute the program `enter python newsdata.py`
+- Enter the data and enter `psql -d news`
+- Create two views
+- `CREATE VIEW views`
+- `CREATE VIEW error`
+- Hit control D to exit psql
+- Then finally to execute the program enter `python newsdata.py`
