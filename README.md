@@ -26,7 +26,7 @@
  ORDER BY views 
  DESC LIMIT 3`
 - Second Query:
-`SELECT name, count(*) AS views 
+> quote `SELECT name, count(*) AS views 
  FROM authors, articles, log
  WHERE articles.slug = substring(log.path FROM 10)
  GROUP BY authors.name 
